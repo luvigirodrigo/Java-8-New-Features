@@ -1,3 +1,4 @@
+import java.util.Optional;
 // Specifies the interface as a functional interface and verify it in compie time
 @FunctionalInterface
 interface MyFunctionalInterface<T,U,R> {
@@ -7,6 +8,23 @@ interface MyFunctionalInterface<T,U,R> {
 	
 	default void display() {
 		System.out.println("MyFunctionalInterface display() default method");
+	}
+	
+	default String convertToAnyCase(String caseToConvert,String text) {
+		Optional<String> caseValue = Optional.ofNullable(caseToConvert);
+		Optional<String> textValue = Optional.ofNullable(text);
+		
+		String convertedValue=null;
+		
+		if(caseValue.isPresent() && textValue.isPresent()){
+			switch(caseValue.get()){
+				case "upper" : { convertedValue = textValue.get().toUpperCase(); }break;
+				case "lower" : { convertedValue = textValue.get().toLowerCase(); }break;
+				default : { return convertedValue; }
+			}
+		}
+	
+		return convertedValue;
 	}
 	
 	// Single abstract method
@@ -52,5 +70,19 @@ class FunctionalInterfacesDemo {
 		// Calling a static method inside a functional interface or just a normal interface
 		double sqrt = MyFunctionalInterface.getSquareRoot(25);
 		System.out.println("Sqare root is : "+ sqrt);
+		
+		MyFunctionalInterface<String,String,Integer> myFuncInterf = (s1,s2)-> {
+			return Integer.valueOf(s1)+Integer.valueOf(s2);
+		};
+		
+		// Executing default method  - generateResult(...) available in MyFunctionalInterface interface
+		System.out.println(myFuncInterf.generateResult("10","25"));
+		System.out.println(myFuncInterf.convertToAnyCase("upper","How are you all ? "));
+		System.out.println(myFuncInterf.convertToAnyCase("lower","How are you all ? "));
+		System.out.println(myFuncInterf.convertToAnyCase("unavailable case","How are you all ? "));
+		
+		MyClass myClassObj = new MyClass();
+		System.out.println(myClassObj.generateResult(12,true));
+		myClassObj.display();
 	}
 }
